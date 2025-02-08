@@ -1,11 +1,5 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
-// #include "hardware/uart.h"
-// #include "hardware/pio.h"
-// #include "hardware/timer.h"
-// #include "hardware/clocks.h"
-// #include "hardware/i2c.h"
-// #include "inc/ssd1306.h"
 #include "inc/font.h"
 
 #include "inc/numbers.h"
@@ -13,16 +7,6 @@
 #include "inc/leds_config.h"
 #include "inc/matrix_leds_config.h"
 #include "inc/uart_config.h"
-
-// #define I2C_PORT i2c1
-// #define I2C_SDA 14
-// #define I2C_SCL 15
-// #define endereco 0x3C
-
-// #define UART_ID uart0
-// #define BAUD_RATE 115200
-// #define UART_TX_PIN 0
-// #define UART_RX_PIN 1
 
 void print_led_status(const char *botao, const char *cor, bool led_status);
 
@@ -32,31 +16,14 @@ int main()
 
   setup_uart();
 
-  // uart_init(UART_ID, BAUD_RATE);
-  // gpio_set_function(UART_TX_PIN, GPIO_FUNC_UART);
-  // gpio_set_function(UART_RX_PIN, GPIO_FUNC_UART);
-
   setup_gpio_leds();
 
   setup_i2c_init();
-  // I2C Initialisation. Using it at 400Khz.
-  // i2c_init(I2C_PORT, 400 * 1000);
 
   setup_gpio_i2c();
-  setup_ssd1306_init();
-  // gpio_set_function(I2C_SDA, GPIO_FUNC_I2C);                    // Set the GPIO pin function to I2C
-  // gpio_set_function(I2C_SCL, GPIO_FUNC_I2C);                    // Set the GPIO pin function to I2C
-  // gpio_pull_up(I2C_SDA);                                        // Pull up the data line
-  // gpio_pull_up(I2C_SCL);                                        // Pull up the clock line
-  // ssd1306_t ssd;                                                // Inicializa a estrutura do display
-  // ssd1306_init(&ssd, WIDTH, HEIGHT, false, endereco, I2C_PORT); // Inicializa o display
-  // ssd1306_config(&ssd);                                         // Configura o display
-  // ssd1306_send_data(&ssd);                                      // Envia os dados para o display
+  setup_ssd1306_init(); // Envia os dados para o display
 
   clear_display();
-  // Limpa o display. O display inicia com todos os pixels apagados.
-  // ssd1306_fill(&ssd, false);
-  // ssd1306_send_data(&ssd);
 
   setup_gpio_buttons();
 
@@ -64,8 +31,6 @@ int main()
   gpio_set_irq_enabled_with_callback(PIN_BOTAO_B, GPIO_IRQ_EDGE_FALL, true, &gpio_irq_handler);
 
   init_uart_with_message();
-  // const char *init_message = "UART Demo - RP2\r\nDigite algo e veja o eco:\r\n";
-  // uart_puts(UART_ID, init_message);
 
   npInit(LED_PIN);
   npClear();
@@ -74,13 +39,13 @@ int main()
   {
     cor = !cor;
     // Atualiza o conteúdo do display com animações
-    // ssd1306_fill(&ssd, false);                           // Limpa o display
-    // ssd1306_rect(&ssd, 3, 3, 122, 58, cor, !cor);        // Desenha um retângulo
-    // ssd1306_draw_string(&ssd, "EMBARCATECH", 20, 20);    // Desenha a primeira string
-    // ssd1306_draw_string(&ssd, "PABLO HENRIQUE", 10, 40); // Desenha a segunda string
-    // ssd1306_send_data(&ssd);                             // Atualiza o display
+    ssd1306_fill(&ssd, false);                           // Limpa o display
+    ssd1306_rect(&ssd, 3, 3, 122, 58, cor, !cor);        // Desenha um retângulo
+    ssd1306_draw_string(&ssd, "EMBARCATECH", 20, 20);    // Desenha a primeira string
+    ssd1306_draw_string(&ssd, "PABLO HENRIQUE", 10, 40); // Desenha a segunda string
+    ssd1306_send_data(&ssd);                             // Atualiza o display
 
-    // sleep_ms(1000);
+    sleep_ms(1000);
 
     if (uart_is_readable(UART_ID))
     {
@@ -154,24 +119,4 @@ int main()
   }
 
   return 0;
-}
-
-void print_led_status(const char *botao, const char *cor, bool led_status)
-{
-  if (led_status)
-  {
-    uart_puts(UART_ID, "Botão ");
-    uart_puts(UART_ID, botao);
-    uart_puts(UART_ID, " pressionado! LED ");
-    uart_puts(UART_ID, cor);
-    uart_puts(UART_ID, " desligado.\r\n");
-  }
-  else
-  {
-    uart_puts(UART_ID, "Botão ");
-    uart_puts(UART_ID, botao);
-    uart_puts(UART_ID, " pressionado! LED ");
-    uart_puts(UART_ID, cor);
-    uart_puts(UART_ID, " ligado.\r\n");
-  }
 }

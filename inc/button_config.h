@@ -4,6 +4,7 @@
 #include "hardware/timer.h"
 #include "pico/stdlib.h"
 #include "leds_config.h"
+#include "uart_config.h"
 
 #define PIN_BOTAO_A 5 // Define o pino do botão A
 #define PIN_BOTAO_B 6 // Define o pino do botão B
@@ -12,6 +13,7 @@ static volatile uint32_t last_time_A = 0;
 static volatile uint32_t last_time_B = 0;
 
 static void gpio_irq_handler(uint gpio, uint32_t events);
+void print_led_status(const char *botao, const char *cor, bool led_status);
 
 void setup_gpio_buttons()
 {
@@ -35,6 +37,7 @@ void gpio_irq_handler(uint gpio, uint32_t events)
       last_time_A = current_time;
       bool led_status = gpio_get(led_pin_g);
       gpio_put(led_pin_g, !led_status);
+      print_led_status("A", "Verde", led_status);
     }
   }
 
@@ -45,10 +48,31 @@ void gpio_irq_handler(uint gpio, uint32_t events)
       last_time_B = current_time;
       bool led_status = gpio_get(led_pin_b);
       gpio_put(led_pin_b, !led_status);
+      print_led_status("B", "Azul", led_status);
     }
   }
 }
 
 extern int button_states[5];
+
+void print_led_status(const char *botao, const char *cor, bool led_status)
+{
+  if (led_status)
+  {
+    uart_puts(UART_ID, "Botão ");
+    uart_puts(UART_ID, botao);
+    uart_puts(UART_ID, " < - botão pressionado | LED ");
+    uart_puts(UART_ID, cor);
+    uart_puts(UART_ID, " desligado.\r\n");
+  }
+  else
+  {
+    uart_puts(UART_ID, "Botão ");
+    uart_puts(UART_ID, botao);
+    uart_puts(UART_ID, " < - botão pressionado | LED ");
+    uart_puts(UART_ID, cor);
+    uart_puts(UART_ID, " ligado.\r\n");
+  }
+}
 
 #endif // BUTTON_CONFIG_H
