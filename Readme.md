@@ -10,32 +10,33 @@ Este projeto explora o uso de interrupções no microcontrolador RP2040 e a func
 - **Botões**:
   - **Botão A**: conectado à GPIO 5
   - **Botão B**: conectado à GPIO 6
+- **Display SSD1306**: conectado via I2C nas GPIOs 14 e 15
 
 ## 🛠️ Funcionamento do Sistema
 
-1. O **LED vermelho** do LED RGB deve piscar continuamente 5 vezes por segundo.
-2. O **botão A** incrementa o número exibido na matriz de LEDs.
-3. O **botão B** decrementa o número exibido na matriz de LEDs.
-4. A **matriz de LEDs WS2812** exibe números de 0 a 9 em um formato fixo ou estilizado, desde que legível.
+1. **Modificação da Biblioteca `font.h`**
+   - Adicionar caracteres minúsculos personalizados à biblioteca `font.h`.
+2. **Entrada de Caracteres via PC**
+
+   - Cada caractere digitado no Serial Monitor do VS Code será exibido no display SSD1306.
+   - Se um número entre 0 e 9 for digitado, um símbolo correspondente será exibido na matriz de LEDs WS2812.
+
+3. **Interação com Botões**
+   - **Botão A**: alterna o estado do LED RGB Verde (liga/desliga).
+   - **Botão B**: alterna o estado do LED RGB Azul (liga/desliga).
+   - As ações dos botões são registradas de duas formas:
+     - Uma mensagem informativa no display SSD1306.
+     - Um texto descritivo enviado ao Serial Monitor.
 
 ## 📜 Implementação
 
 O código utiliza:
 
-- **Interrupções** para capturar eventos de pressionamento dos botões.
+- **Interrupções (IRQ)** para capturar eventos de pressionamento dos botões.
 - **Debounce via software** para evitar leituras incorretas dos botões.
 - **Uso de resistores de pull-up internos** para os botões de acionamento.
-
-## 📌 Configuração dos Pinos
-
-| Componente         | GPIO |
-| ------------------ | ---- |
-| Matriz WS2812      | 7    |
-| LED Vermelho (RGB) | 11   |
-| LED Azul (RGB)     | 12   |
-| LED Verde (RGB)    | 13   |
-| Botão A            | 5    |
-| Botão B            | 6    |
+- **Comunicação UART** para entrada de caracteres via Serial Monitor.
+- **Protocolo I2C** para comunicação com o display SSD1306.
 
 ## Como Rodar o Projeto
 
@@ -53,14 +54,14 @@ O código utiliza:
 
 2. **Simulação**:
 
-   - Execute a simulação para visualizar o comportamento dos LEDs e botões no ambiente virtual do Wokwi.
+   - Execute a simulação para visualizar o comportamento dos LEDs, botões e do display no ambiente virtual do Wokwi.
 
 3. **Executar na Placa BitDogLab**:
    - Coloque a placa em **modo BOOTSEL** (mantenha pressionado o botão BOOTSEL enquanto conecta ao computador).
    - Transfira o código compilado para a placa e execute-o.
 
-Agora seu projeto está pronto para explorar o funcionamento de interrupções e controle de LEDs com a BitDogLab! 🚀
+Agora seu projeto está pronto para explorar o funcionamento de interrupções, comunicação serial e controle de LEDs com a BitDogLab! 🚀
 
-## Vídeo sobre o projeto
+## 📺 Vídeo sobre o projeto
 
-[Link do vídeo](https://youtu.be/kcPQGhOJCg0)
+[Link do vídeo](https://www.youtube.com/watch?v=rTc49sQCXto)
